@@ -9,7 +9,7 @@ using the Helsinki-NLP/opus-mt-zh-en model.
   Make sure to create a virtual environment before running following command.
 
   ```bash
-    ./setup.sh
+    bash ./setup.sh
   ```
 
 ## Usage
