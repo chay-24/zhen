@@ -4,10 +4,10 @@ echo "Setting up Chinese to English Translator..."
 echo "-------------------------------------------"
 
 echo "Updating system packages"
-sudp apt-get update
+sudo apt-get update
 
 # Install Tesseract OCR and Chinese language support
-sudp apt-get install -y tesseract-ocr tesseract-ocr-chi-sim tesseract-ocr-chi-tra
+sudo apt-get install -y tesseract-ocr tesseract-ocr-chi-sim tesseract-ocr-chi-tra
 
 # Install py dependencies
 pip install -r requirements.txt
