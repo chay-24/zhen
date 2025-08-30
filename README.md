@@ -6,6 +6,7 @@ using the Helsinki-NLP/opus-mt-zh-en model.
 ## Installation
 
 1. **Run the setup script**
+  Make sure to create a virtual environment before running following command.
 
   ```bash
     ./setup.sh

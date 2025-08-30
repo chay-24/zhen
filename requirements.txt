@@ -1,0 +1,14 @@
+torch>=1.9.0
+transformers>=4.20.0
+
+opencv-python>=4.5.0
+pillow>=8.0.0
+numpy>=1.21.0
+
+pytesseract>=0.3.8
+
+pyMuPDF>=1.20.0
+
+chardet>=4.0.0
+
+tqdm>=4.62.0
