@@ -99,9 +99,9 @@ class ChineseTextTranslator:
         pdf_document.close()
         return all_translations
 
-    def get_translations_json(self, translations: List[dict]) -> str:
+    def save_translations(self, translations: List[dict], output_path: str) -> str:
         """
-        Return the translations as a JSON string.
+        Save translations to JSON file and return JSON string.
         """
         output_data = {
             "total_translations": len(translations),
@@ -109,14 +109,26 @@ class ChineseTextTranslator:
             "translations": translations
         }
 
-        return json.dumps(output_data, ensure_ascii=False, indent=2)
+        json_string = json.dumps(output_data, ensure_ascii=False, indent=2)
 
-    def process_file(self, input_path: str) -> str:
+        # Save to JSON file
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(json_string)
+        
+        print(f"Translations saved to: {output_path}")
+        return json_string
+
+    def process_file(self, input_path: str, output_path: str = None) -> str:
         """
         Process a PDF file and return translations as JSON string.
         """
         if not os.path.exists(input_path):
             raise FileNotFoundError(f"File not found: {input_path}")
+
+        # Determine output path if not provided
+        if not output_path:
+            base_name, _ = os.path.splitext(input_path)
+            output_path = f"{base_name}_translations.json"
 
         # Check if it's a PDF file
         _, ext = os.path.splitext(input_path.lower())
@@ -125,11 +137,11 @@ class ChineseTextTranslator:
 
         translations = self.process_pdf_file(input_path)
 
-        # Return JSON string
+        # Save and return JSON
         if translations:
             print(f"\nExtraction and translation completed!")
             print(f"Found and translated {len(translations)} Chinese text segments.")
-            return self.get_translations_json(translations)
+            return self.save_translations(translations, output_path)
         else:
             print("\nNo Chinese text found in the PDF file.")
             empty_data = {
@@ -137,12 +149,20 @@ class ChineseTextTranslator:
                 "translation_model": "Helsinki-NLP/opus-mt-zh-en",
                 "translations": []
             }
-            return json.dumps(empty_data, ensure_ascii=False, indent=2)
+            json_string = json.dumps(empty_data, ensure_ascii=False, indent=2)
+            
+            # Save empty JSON file
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(json_string)
+            print(f"Empty translation file saved to: {output_path}")
+            
+            return json_string
 
 
 def main():
     parser = argparse.ArgumentParser(description="Extract and translate Chinese text from PDFs to JSON")
     parser.add_argument("input_file", help="Input PDF file path")
+    parser.add_argument("-o", "--output", help="Path to save the JSON translation file")
     parser.add_argument("-m", "--model", default="Helsinki-NLP/opus-mt-zh-en",
                         help="Model name for translation")
 
@@ -150,7 +170,7 @@ def main():
 
     try:
         translator = ChineseTextTranslator(args.model)
-        json_output = translator.process_file(args.input_file)
+        json_output = translator.process_file(args.input_file, args.output)
         
         # Print the JSON output
         print("\n" + "="*50)
